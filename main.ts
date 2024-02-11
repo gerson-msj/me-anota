@@ -1,0 +1,1 @@
+Deno.serve(() => new Response("Em desenvolvimento", {status: 200, headers: {"Content-Type":"text/plain"}}));
