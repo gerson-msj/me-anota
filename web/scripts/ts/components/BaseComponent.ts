@@ -5,13 +5,13 @@ export default abstract class BaseComponent extends HTMLElement {
     private modelPath: string;
     private stylePath: string;
 
-    abstract initialize(): Promise<void>;
+    abstract initialize(): void;
 
-    constructor(path: string, model: string, style: string) {
+    constructor(componentName: string) {
         super();
         
-        this.modelPath = `${path}${model}`;
-        this.stylePath = `${path}${style}`;
+        this.modelPath = `/components/${componentName}/${componentName}.model.html`;
+        this.stylePath = `/components/${componentName}/${componentName}.style.css`;
     }
 
     async connectedCallback() {
@@ -24,7 +24,7 @@ export default abstract class BaseComponent extends HTMLElement {
             this.initializeModel()
         ]);
 
-        await this.initialize();
+        this.initialize();
     }
 
     private async initializeModel() {

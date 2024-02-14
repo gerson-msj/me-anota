@@ -2,10 +2,10 @@ export default class BaseComponent extends HTMLElement {
     shadow = this.attachShadow({ mode: "closed" });
     modelPath;
     stylePath;
-    constructor(path, model, style) {
+    constructor(componentName) {
         super();
-        this.modelPath = `${path}${model}`;
-        this.stylePath = `${path}${style}`;
+        this.modelPath = `/components/${componentName}/${componentName}.model.html`;
+        this.stylePath = `/components/${componentName}/${componentName}.style.css`;
     }
     async connectedCallback() {
         await this.initializeElement();
@@ -15,7 +15,7 @@ export default class BaseComponent extends HTMLElement {
             this.initializeStyle(),
             this.initializeModel()
         ]);
-        await this.initialize();
+        this.initialize();
     }
     async initializeModel() {
         const requestModel = await fetch(this.modelPath);

@@ -17,12 +17,12 @@ export default class PageController extends BaseController {
             return super.nextHandle(context);
 
         const pageDir = join(Deno.cwd(), this.basePath ?? "web");
-        let filePath = join(pageDir, context.url.pathname);
-    
+        let filePath = context.url.pathname.includes(".") ? join(pageDir, context.url.pathname) : pageDir;
+        
         try {
             if(Deno.statSync(filePath).isDirectory)
                 filePath = join(filePath, "index.html");
-    
+
             const response = await serveFile(context.request, filePath);
             return response;
             
