@@ -1,0 +1,37 @@
+<template>
+    <nav>
+        <a href="" id="voltar">Voltar</a>
+    </nav>
+    
+    <main>
+        <h2>Criar um novo Bloco de Anotações</h2>
+
+        <form autocomplete="off">
+            <div class="field">
+                <label for="nome">Informe um nome único para o seu Bloco de Anotações.</label>
+                <input type="text" autocomplete="off" placeholder="Nome" id="nome">
+            </div>
+
+            <div class="btn">
+                <button type="button" id="verificar" disabled>Verificar</button>
+            </div>
+
+            <div>
+                <p id="resultadoVerificacao">&nbsp;</p>
+            </div>
+            <div id="divSenha" style="display: none;">
+                <label for="senha">Defina uma senha para criptografar as Anotações.</label>
+                <input type="password" autocomplete="new-password" placeholder="Senha" id="senha">
+                <small>
+                    <br />
+                    Senhas maiores são mais seguras.<br />
+                    A senha informada será utilizada para criptografia e não será armazenada, desta forma sua
+                    recuperação é impossível.<br />
+                    Só permita o armazenamento de senhas pelo navegador em dispositivos privados e de acesso exclusivo.<br />
+                    Memorize sua senha!<br />
+                </small>
+                <button type="button" id="criar">Criar</button>
+            </div>
+        </form>
+    </main>
+</template>

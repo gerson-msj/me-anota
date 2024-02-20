@@ -3,7 +3,7 @@ export default abstract class BaseComponent extends HTMLElement {
     protected shadow = this.attachShadow({mode: "closed"});
 
     private modelPath: string;
-    private stylePath: string;
+    private styles: string[];
 
     abstract initialize(): void;
 
@@ -11,7 +11,12 @@ export default abstract class BaseComponent extends HTMLElement {
         super();
         
         this.modelPath = `/components/${componentName}/${componentName}.model.html`;
-        this.stylePath = `/components/${componentName}/${componentName}.style.css`;
+        this.styles = [
+            "/styles/dark.css",
+            "/styles/form.css",
+            "/styles/main.css",
+            `/components/${componentName}/${componentName}.style.css`
+        ];
     }
 
     async connectedCallback() {
@@ -37,11 +42,17 @@ export default abstract class BaseComponent extends HTMLElement {
     }
 
     private async initializeStyle() {
-        const requestStyle = await fetch(this.stylePath);
-        const style = await requestStyle.text();
-        const sheet = new CSSStyleSheet();
-        await sheet.replace(style);
-        this.shadow.adoptedStyleSheets = [sheet];
+        const requestsStyle = this.styles.map(s => fetch(s));
+        const resultsStyle = await Promise.all(requestsStyle);
+        const requestsText = resultsStyle.map(r => r.text());
+        const resultsText = await Promise.all(requestsText);
+        const requestsSheet = resultsText.map(t => (new CSSStyleSheet()).replace(t));
+        const resultsSheet = await Promise.all(requestsSheet);
+        
+        this.shadow.adoptedStyleSheets = resultsSheet;
     }
 
+    protected getElement<T>(name: string): T {
+        return this.shadow.querySelector(`#${name}`) as T;
+    }
 }

@@ -16,7 +16,7 @@ export default class PageController extends BaseController {
         if(context.isApiRequest)
             return super.nextHandle(context);
 
-        const pageDir = join(Deno.cwd(), this.basePath ?? "web");
+        const pageDir = join(Deno.cwd(), this.basePath ?? "web", "docs");
         let filePath = context.url.pathname.includes(".") ? join(pageDir, context.url.pathname) : pageDir;
         
         try {
