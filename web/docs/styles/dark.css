@@ -17,12 +17,12 @@ a:hover {
 
 /* Estilo para os títulos */
 h1, h2, h3 {
-    color: #fff;
+    color: #eee;
 }
 
 /* Estilo para os parágrafos */
 p {
-    color: #ddd;
+    color: #eee;
 }
 
 /* Estilo para os formulários */
@@ -56,4 +56,8 @@ button:disabled:hover {
 
 input[type="submit"]:hover, button:hover {
     background-color: #777;
+}
+
+footer {
+    color: #888;
 }

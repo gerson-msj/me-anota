@@ -1,46 +1,42 @@
 import BaseComponent from "./BaseComponent.js";
 import CriarService from "../Services/CriarService.js";
+import CriarViewModel from "../ViewModels/CriarViewModel.js";
 
 export default class CriarComponent extends BaseComponent {
 
-    private service: CriarService;
-
-    private _nome: HTMLInputElement | null = null;
-    private get nome() { return this._nome!; }
-
-    private _verificar: HTMLButtonElement | null = null;
-    private get verificar() { return this._verificar!; }
-
-    private _voltar: HTMLAnchorElement | null = null;
-    private get voltar() { return this._voltar!; }
+    private _service: CriarService | null = null;
+    private get service() { return this._service! }
+    private _viewModel: CriarViewModel | null = null;
+    private get viewModel() { return this._viewModel!; }
 
     constructor() {
         super("criar");
-        this.service = new CriarService();
     }
 
     initialize(): void {
-        this._nome = this.getElement("nome");
-        this._verificar = this.getElement("verificar");
-        this._voltar = this.getElement("voltar");
+        this._service = new CriarService();
+        this._viewModel = new CriarViewModel(this.shadow);
 
-        this.nome.addEventListener("keyup", () => this.verificar.disabled = this.nome.value == "");
-        
-        this.verificar.addEventListener("click", async () => await this.onVerificar());
-
-        this.voltar.addEventListener("click", (ev: MouseEvent) => {
-            this.dispatchEvent(new Event("voltar"));
-            ev.preventDefault();
-        });
+        this.viewModel.onVerificar = async () => await this.verificar();
+        this.viewModel.onVoltar = () => this.dispatchEvent(new Event("voltar"));
+        this.viewModel.onCriar = async () => await this.criar();
     }
 
-    async onVerificar(): Promise<void> {
+    async verificar(): Promise<void> {
         try {
-            const existe = await this.service.ExisteNota(this.nome.value);
-            console.info("Resultado: ", existe);
+            const existe = await this.service.ExistBloco(this.viewModel.nome);
+            this.viewModel.exibirSenha(!existe);
+            this.viewModel.resultadoVerificacao = existe ? `A nota ${this.viewModel.nome} já existe.` : `A nota ${this.viewModel.nome} está disponível.`;
         } catch (error) {
             console.error("Erro: ", error);
+            this.viewModel.exibirSenha(false);
+            this.viewModel.resultadoVerificacao = "Não foi possível verificar a nota no momento.";
         }
+    }
+
+    async criar(): Promise<void> {
+        const ok = await this.service.CriarBloco(this.viewModel.nome, this.viewModel.senha);
+        console.log("ok: ", ok);
     }
 
 }

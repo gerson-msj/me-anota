@@ -3,7 +3,7 @@ import AbrirComponent from "./Components/AbrirComponent.js";
 import HeaderComponent from "./Components/HeaderComponent.js";
 import HomeComponent from "./Components/HomeComponent.js";
 {
-    const divComponent = document.querySelector("#divComponent");
+    const mainElement = document.querySelector("main");
     const loadedComponents = [];
     let currentComponent = null;
     function main() {
@@ -39,8 +39,9 @@ import HomeComponent from "./Components/HomeComponent.js";
         }
         currentComponent?.remove();
         currentComponent = document.createElement(name);
-        divComponent.appendChild(currentComponent);
-        history.pushState(null, "", url);
+        mainElement.appendChild(currentComponent);
+        if (location.pathname !== url)
+            history.pushState(null, "", url);
         return currentComponent;
     }
     main();

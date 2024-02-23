@@ -16,12 +16,19 @@
                 <button type="button" id="verificar" disabled>Verificar</button>
             </div>
 
-            <div>
+            <div class="field">
                 <p id="resultadoVerificacao">&nbsp;</p>
             </div>
-            <div id="divSenha" style="display: none;">
-                <label for="senha">Defina uma senha para criptografar as Anotações.</label>
-                <input type="password" autocomplete="new-password" placeholder="Senha" id="senha">
+
+            <div id="divSenha" class="ocultar">
+                <div class="field">
+                    <label for="senha">Defina uma senha para criptografar as Anotações.</label>
+                    <input type="password" autocomplete="off" placeholder="Senha" id="senha">
+                </div>
+                <div class="field">
+                    <label for="senhaConfirmacao">Confirme sua nova senha.</label>
+                    <input type="password" autocomplete="off" placeholder="Confirmação da senha" id="senhaConfirmacao">
+                </div>
                 <small>
                     <br />
                     Senhas maiores são mais seguras.<br />
@@ -30,7 +37,7 @@
                     Só permita o armazenamento de senhas pelo navegador em dispositivos privados e de acesso exclusivo.<br />
                     Memorize sua senha!<br />
                 </small>
-                <button type="button" id="criar">Criar</button>
+                <button type="button" id="criar" disabled>Criar</button>
             </div>
         </form>
     </main>

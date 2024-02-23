@@ -4,7 +4,7 @@ import HeaderComponent from "./Components/HeaderComponent.js";
 import HomeComponent from "./Components/HomeComponent.js";
 
 {
-    const divComponent = document.querySelector("#divComponent") as HTMLDivElement;
+    const mainElement = document.querySelector("main") as HTMLElement;
     const loadedComponents: string[] = [];
     let currentComponent: HTMLElement | null = null;
     
@@ -49,8 +49,10 @@ import HomeComponent from "./Components/HomeComponent.js";
 
         currentComponent?.remove();
         currentComponent = document.createElement(name);
-        divComponent.appendChild(currentComponent);
-        history.pushState(null, "", url);
+        mainElement.appendChild(currentComponent);
+        
+        if(location.pathname !== url)
+            history.pushState(null, "", url);
 
         return currentComponent;
     }

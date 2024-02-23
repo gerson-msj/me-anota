@@ -1,0 +1,30 @@
+:root {
+    --header-height: 30px;
+    --footer-height: 200px;
+}
+
+body {
+    display: grid;
+    grid-template-rows: 80px auto 20px;
+    height: 100vh;
+    margin: 0;
+    gap: 0;
+}
+
+header {
+    padding: 5px;
+    display: flex;
+    align-items: center;
+}
+
+main {
+    padding: 10px;
+}
+
+footer {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    font-size: small;
+    padding-right: 5px;
+}
