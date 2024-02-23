@@ -1,4 +1,4 @@
-export default class ApiService {
+export default class Api {
     baseUrl;
     /**
      *
@@ -22,4 +22,4 @@ export default class ApiService {
         return data;
     }
 }
-//# sourceMappingURL=ApiService.js.map
+//# sourceMappingURL=Api.js.map

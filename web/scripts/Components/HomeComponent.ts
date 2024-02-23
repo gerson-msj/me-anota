@@ -1,9 +1,8 @@
 import BaseComponent from "./BaseComponent.js";
+import HomeService from "../Services/HomeService.js";
+import HomeViewModel from "../ViewModels/HomeViewModel.js";
 
-export default class HomeComponent extends BaseComponent {
-    
-    private abrir: HTMLAnchorElement | null = null;
-    private criar: HTMLAnchorElement | null = null;
+export default class HomeComponent extends BaseComponent<HomeService, HomeViewModel> {
 
     constructor() {
         super("home");
@@ -11,17 +10,10 @@ export default class HomeComponent extends BaseComponent {
     }    
     
     initialize(): void {
-        this.abrir = this.shadow.querySelector("#abrir");
-        this.criar = this.shadow.querySelector("#criar");
+        this.initializeService(HomeService);
+        this.initializeViewModel(HomeViewModel);
 
-        this.abrir!.onclick = () => {
-            this.dispatchEvent(new Event("abrir"));
-            return false;
-        };
-
-        this.criar!.onclick = () => {
-            this.dispatchEvent(new Event("criar"));
-            return false;
-        };
+        this.viewModel.onAbrir = () => this.dispatchEvent(new Event("abrir"));
+        this.viewModel.onCriar = () => this.dispatchEvent(new Event("criar"));
     }
 }

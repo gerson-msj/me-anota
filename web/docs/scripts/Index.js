@@ -1,7 +1,8 @@
-import CriarComponent from "./Components/CriarComponent.js";
-import AbrirComponent from "./Components/AbrirComponent.js";
 import HeaderComponent from "./Components/HeaderComponent.js";
 import HomeComponent from "./Components/HomeComponent.js";
+import CriarComponent from "./Components/CriarComponent.js";
+import AbrirComponent from "./Components/AbrirComponent.js";
+import AnotacoesComponent from "./Components/AnotacoesComponent.js";
 {
     const mainElement = document.querySelector("main");
     const loadedComponents = [];
@@ -31,6 +32,15 @@ import HomeComponent from "./Components/HomeComponent.js";
     function loadCriar() {
         const component = loadComponent("criar-component", "/criar", CriarComponent);
         component.addEventListener("voltar", () => loadHome());
+        component.addEventListener("abrirAnotacoes", (ev) => {
+            const user = ev.detail;
+            loadAnotacoes(user);
+        });
+    }
+    function loadAnotacoes(user) {
+        const component = loadComponent("anotacoes-component", "/anotacoes", AnotacoesComponent);
+        component.addEventListener("sair", () => loadHome());
+        component.dispatchEvent(new CustomEvent("initializeUser", { detail: user }));
     }
     function loadComponent(name, url, constructor) {
         if (!loadedComponents.includes(name)) {

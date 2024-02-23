@@ -2,20 +2,15 @@ import BaseComponent from "./BaseComponent.js";
 import CriarService from "../Services/CriarService.js";
 import CriarViewModel from "../ViewModels/CriarViewModel.js";
 
-export default class CriarComponent extends BaseComponent {
-
-    private _service: CriarService | null = null;
-    private get service() { return this._service! }
-    private _viewModel: CriarViewModel | null = null;
-    private get viewModel() { return this._viewModel!; }
+export default class CriarComponent extends BaseComponent<CriarService, CriarViewModel> {
 
     constructor() {
         super("criar");
     }
 
     initialize(): void {
-        this._service = new CriarService();
-        this._viewModel = new CriarViewModel(this.shadow);
+        this.initializeService(CriarService);
+        this.initializeViewModel(CriarViewModel);
 
         this.viewModel.onVerificar = async () => await this.verificar();
         this.viewModel.onVoltar = () => this.dispatchEvent(new Event("voltar"));
@@ -36,7 +31,11 @@ export default class CriarComponent extends BaseComponent {
 
     async criar(): Promise<void> {
         const ok = await this.service.CriarBloco(this.viewModel.nome, this.viewModel.senha);
-        console.log("ok: ", ok);
+        if (ok)
+            this.dispatchEvent(new CustomEvent("abrirAnotacoes", { detail: { nome: this.viewModel.nome, senha: this.viewModel.senha } }));
+        else
+            console.log("ok: ", ok);
+
     }
 
 }

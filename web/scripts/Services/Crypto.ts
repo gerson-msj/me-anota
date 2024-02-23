@@ -1,4 +1,4 @@
-export default class CryptoService {
+export default class Crypto {
 
     private encoder: TextEncoder;
 

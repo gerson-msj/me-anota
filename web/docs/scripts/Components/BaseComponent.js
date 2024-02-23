@@ -1,5 +1,9 @@
 export default class BaseComponent extends HTMLElement {
     shadow = this.attachShadow({ mode: "closed" });
+    _service = null;
+    get service() { return this._service; }
+    _viewModel = null;
+    get viewModel() { return this._viewModel; }
     modelPath;
     styles;
     constructor(componentName) {
@@ -41,6 +45,12 @@ export default class BaseComponent extends HTMLElement {
     }
     getElement(name) {
         return this.shadow.querySelector(`#${name}`);
+    }
+    initializeService(service) {
+        this._service = new service();
+    }
+    initializeViewModel(viewModel) {
+        this._viewModel = new viewModel(this.shadow);
     }
 }
 //# sourceMappingURL=BaseComponent.js.map

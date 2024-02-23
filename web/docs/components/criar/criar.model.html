@@ -2,43 +2,43 @@
     <nav>
         <a href="" id="voltar">Voltar</a>
     </nav>
-    
-    <main>
-        <h2>Criar um novo Bloco de Anotações</h2>
 
-        <form autocomplete="off">
+    <h2>Criar um novo Bloco de Anotações</h2>
+
+    <form autocomplete="off">
+        <div class="field">
+            <label for="nome">Informe um nome único para o seu Bloco de Anotações.</label>
+            <input type="text" autocomplete="off" placeholder="Nome" id="nome">
+        </div>
+
+        <div class="btn">
+            <button type="button" id="verificar" disabled>Verificar</button>
+        </div>
+
+        <div class="field">
+            <p id="resultadoVerificacao">&nbsp;</p>
+        </div>
+
+        <div id="divSenha" class="ocultar">
             <div class="field">
-                <label for="nome">Informe um nome único para o seu Bloco de Anotações.</label>
-                <input type="text" autocomplete="off" placeholder="Nome" id="nome">
+                <label for="senha">Defina uma senha para criptografar as Anotações.</label>
+                <input type="password" autocomplete="off" placeholder="Senha" id="senha">
             </div>
-
-            <div class="btn">
-                <button type="button" id="verificar" disabled>Verificar</button>
-            </div>
-
             <div class="field">
-                <p id="resultadoVerificacao">&nbsp;</p>
+                <label for="senhaConfirmacao">Confirme sua nova senha.</label>
+                <input type="password" autocomplete="off" placeholder="Confirmação da senha" id="senhaConfirmacao">
             </div>
+            <small>
+                <br />
+                Senhas maiores são mais seguras.<br />
+                A senha informada será utilizada para criptografia e não será armazenada, desta forma sua
+                recuperação é impossível.<br />
+                Só permita o armazenamento de senhas pelo navegador em dispositivos privados e de acesso
+                exclusivo.<br />
+                Memorize sua senha!<br />
+            </small>
+            <button type="button" id="criar" disabled>Criar</button>
+        </div>
+    </form>
 
-            <div id="divSenha" class="ocultar">
-                <div class="field">
-                    <label for="senha">Defina uma senha para criptografar as Anotações.</label>
-                    <input type="password" autocomplete="off" placeholder="Senha" id="senha">
-                </div>
-                <div class="field">
-                    <label for="senhaConfirmacao">Confirme sua nova senha.</label>
-                    <input type="password" autocomplete="off" placeholder="Confirmação da senha" id="senhaConfirmacao">
-                </div>
-                <small>
-                    <br />
-                    Senhas maiores são mais seguras.<br />
-                    A senha informada será utilizada para criptografia e não será armazenada, desta forma sua
-                    recuperação é impossível.<br />
-                    Só permita o armazenamento de senhas pelo navegador em dispositivos privados e de acesso exclusivo.<br />
-                    Memorize sua senha!<br />
-                </small>
-                <button type="button" id="criar" disabled>Criar</button>
-            </div>
-        </form>
-    </main>
 </template>

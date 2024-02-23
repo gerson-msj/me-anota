@@ -1,5 +1,5 @@
-export default class CriarViewModel {
-    shadow;
+import BaseViewModel from "./BaseViewModel.js";
+export default class CriarViewModel extends BaseViewModel {
     _voltar;
     _nome;
     get nome() { return this._nome.value; }
@@ -15,7 +15,7 @@ export default class CriarViewModel {
     onVoltar = () => { };
     onCriar = () => { };
     constructor(shadow) {
-        this.shadow = shadow;
+        super(shadow);
         this._voltar = this.getElement("voltar");
         this._nome = this.getElement("nome");
         this._verificar = this.getElement("verificar");
@@ -50,9 +50,6 @@ export default class CriarViewModel {
     }
     desativarCriar() {
         this._criar.disabled = this._senha.value === "" || this._senha.value !== this._senhaConfirmacao.value;
-    }
-    getElement(name) {
-        return this.shadow.querySelector(`#${name}`);
     }
 }
 //# sourceMappingURL=CriarViewModel.js.map

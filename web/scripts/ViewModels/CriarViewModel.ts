@@ -1,6 +1,6 @@
-export default class CriarViewModel {
+import BaseViewModel from "./BaseViewModel.js";
 
-    private shadow: ShadowRoot;
+export default class CriarViewModel extends BaseViewModel {
 
     private _voltar: HTMLAnchorElement;
 
@@ -19,12 +19,13 @@ export default class CriarViewModel {
     private _senhaConfirmacao: HTMLInputElement;
     private _criar: HTMLButtonElement;
 
-    public onVerificar = () => { };
-    public onVoltar = () => { };
+    public onVerificar = () => {};
+    public onVoltar = () => {};
     public onCriar = () => {};
 
     constructor(shadow: ShadowRoot) {
-        this.shadow = shadow;
+        super(shadow);
+        
         this._voltar = this.getElement("voltar");
         this._nome = this.getElement("nome");
         this._verificar = this.getElement("verificar");
@@ -71,9 +72,5 @@ export default class CriarViewModel {
 
     private desativarCriar() {
         this._criar.disabled = this._senha.value === "" || this._senha.value !== this._senhaConfirmacao.value;
-    }
-
-    private getElement<T>(name: string): T {
-        return this.shadow.querySelector(`#${name}`) as T;
     }
 }

@@ -1,4 +1,4 @@
-export default class CryptoService {
+export default class Crypto {
     encoder;
     constructor() {
         this.encoder = new TextEncoder();
@@ -45,4 +45,4 @@ export default class CryptoService {
         return dataCryptArray;
     }
 }
-//# sourceMappingURL=CryptoService.js.map
+//# sourceMappingURL=Crypto.js.map

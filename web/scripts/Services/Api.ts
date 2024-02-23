@@ -1,4 +1,4 @@
-export default class ApiService {
+export default class Api {
     private baseUrl: string;
 
     /**

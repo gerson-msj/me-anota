@@ -25,7 +25,9 @@ export default class CriarController extends BaseController {
             return context.badRequest("O hash da nota não foi informado!");
 
         const hash = context.url.searchParams.get("hash")!;
-        //await context.kv.delete([hash, 0]);
+        
+        await context.kv.delete([hash, 0]);
+        
         const data = await context.kv.get([hash, 0]);
         return context.ok({ existe: data.versionstamp !== null });
 
