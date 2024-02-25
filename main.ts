@@ -1,5 +1,5 @@
 import BaseController from "./api/controllers/base.controller.ts";
-import Context from "./api/controllers/context.ts";
+import Context from "./api/controllers/context2.ts";
 import PageController from "./api/controllers/page.controller.ts";
 import CriarController from "./api/controllers/criar.controller.ts";
 import AbrirController from "./api/controllers/abrir.controller.ts";
