@@ -1,5 +1,5 @@
 import Context from "./context.ts";
-import IController from "./icontroller.ts";
+import IController from "./icontrollerx.ts";
 
 export default abstract class BaseController  {
   
