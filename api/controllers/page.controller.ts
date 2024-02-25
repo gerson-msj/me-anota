@@ -1,7 +1,7 @@
 import { serveFile } from "https://deno.land/std@0.212.0/http/file_server.ts";
 import { join } from "https://deno.land/std@0.212.0/path/mod.ts";
 import BaseController from "./base.controller.ts";
-import Context from "./context2.ts";
+import Context from "./context.ts";
 
 export default class PageController extends BaseController {
     

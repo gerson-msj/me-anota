@@ -1,5 +1,5 @@
 import BaseController from "./base.controller.ts";
-import Context from "./context2.ts";
+import Context from "./context.ts";
 
 export default class CriarController extends BaseController {
 

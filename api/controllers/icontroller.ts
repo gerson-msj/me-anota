@@ -1,4 +1,4 @@
-import Context from "./context2.ts";
+import Context from "./context.ts";
 
 export default interface IController {
     setNext(controller: IController): IController;
