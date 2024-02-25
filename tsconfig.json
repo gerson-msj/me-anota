@@ -2,13 +2,13 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "rootDir": "./web/scripts/",
+    "rootDir": "web/ts",
     "sourceMap": true,
-    "outDir": "./web/docs/scripts/",
+    "outDir": "web/docs/scripts",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["web/scripts/*.ts"]
+  "include": ["web/ts/*.ts"]
 }

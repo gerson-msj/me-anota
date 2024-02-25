@@ -1,25 +1,28 @@
 export default class ApiService {
-    baseUrl;
+    private baseUrl: string;
+
     /**
      *
      */
-    constructor(baseUrl) {
+    constructor(baseUrl: string) {
         this.baseUrl = `/api/${baseUrl}`;
     }
-    async doGet(searchParams) {
+
+    public async doGet<TResult>(searchParams: URLSearchParams): Promise<TResult> {
         const url = `${this.baseUrl}?${searchParams}`;
         const response = await fetch(url);
-        const data = await response.json();
+        const data: TResult = await response.json();
         return data;
     }
-    async doPost(obj) {
+
+    public async doPost<TResult>(obj: object): Promise<TResult> {
         const response = await fetch(this.baseUrl, {
             method: "POST",
             headers: { "content-type": "application/json; charset=utf-8" },
             body: JSON.stringify(obj)
         });
-        const data = await response.json();
+
+        const data: TResult = await response.json();
         return data;
     }
 }
-//# sourceMappingURL=api.js.map

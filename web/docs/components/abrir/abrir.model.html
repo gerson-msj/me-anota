@@ -1,3 +1,28 @@
 <template>
-    <h1>Abrir</h1>
+
+    <nav>
+        <a href="" id="voltar">Voltar</a>
+    </nav>
+
+    <h2>Abrir um Bloco de Anotações existente.</h2>
+
+    <form autocomplete="off">
+        <div class="field">
+            <label for="nomeBloco">Nome do Bloco de Anotações.</label>
+            <input type="text" autocomplete="off" placeholder="Nome" id="nomeBloco">
+        </div>
+
+        <div class="field">
+            <label for="senha">Senha para descriptografar as Anotações.</label>
+            <input type="password" autocomplete="off" placeholder="Senha" id="senha">
+        </div>
+
+        <div class="btn">
+            <button type="button" id="abrir" disabled>Abrir</button>
+        </div>
+
+        <div class="field">
+            <p id="resultado">&nbsp;</p>
+        </div>
+    </form>
 </template>
