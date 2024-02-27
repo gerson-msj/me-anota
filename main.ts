@@ -7,10 +7,11 @@ import AbrirController from "./api/controllers/abrir.controller.ts";
 const page = BaseController.createInstance(PageController);
 
 const handler = async (request: Request): Promise<Response> => {
-
+    
     const context = new Context(request);
 
     if (context.isApiRequest) {
+
         await context.openKv();
         const criar = new CriarController();
         const abrir = new AbrirController();

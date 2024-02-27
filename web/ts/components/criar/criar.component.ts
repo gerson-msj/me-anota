@@ -20,7 +20,7 @@ export default class CriarComponent extends BaseComponent<CriarService, CriarVie
     async verificar(): Promise<void> {
         const token = await this.viewModel.token();
         try {    
-            const existe = await this.service.existBloco(token);
+            const existe = await this.service.existeBloco(token);
             this.viewModel.exibirSenha(!existe);
             this.viewModel.resultadoVerificacao = existe ? `A nota ${this.viewModel.nomeBloco} já existe.` : `A nota ${this.viewModel.nomeBloco} está disponível.`;
         } catch (error) {

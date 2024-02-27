@@ -17,12 +17,16 @@ export default class AbrirController extends BaseController {
     }
 
     async obterBloco(context: Context): Promise<Response> {
-
+        // receber senha.
         if (!context.url.searchParams.has("nomeBloco"))
             return context.badRequest("Parâmetros inválidos");
 
         const nomeBloco = context.url.searchParams.get("nomeBloco")!;
         const data = await context.kv.get([nomeBloco, 0]);
+
+        // validar senha.
+        // criar jwt
+        // retornar nome do bloco e jwt
         return context.ok({ bloco: data.value as string | null });
 
     }

@@ -1,4 +1,4 @@
-import Crypto from "./services/crypto.js";
+import Crypto from "./services/crypto.web.service.js";
 export default class BaseViewModel {
     shadow;
     crypto;

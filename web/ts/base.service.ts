@@ -1,13 +1,13 @@
-import CryptoService from "./services/crypto.js";
+import CryptoWebService from "./services/crypto.web.service.js";
 import ApiService from "./services/api.js";
 
 export default abstract class BaseService {
     
-    protected crypto: CryptoService;
+    protected crypto: CryptoWebService;
     protected api: ApiService;
 
     constructor(baseUrl: string) {
-        this.crypto = new CryptoService();
+        this.crypto = new CryptoWebService();
         this.api = new ApiService(baseUrl);
     }
 }
