@@ -14,12 +14,16 @@ export default class CryptoApiService {
         return `${salt}.${senhaCrypto}`;
     }
 
+    
+
     private arrayBufferToString64(arrayBuffer: ArrayBuffer): string {
-        return btoa(Array.from(new Uint8Array(arrayBuffer)).map(b => String.fromCharCode(b)).join(""));
+        const base64 = btoa(Array.from(new Uint8Array(arrayBuffer)).map(b => String.fromCharCode(b)).join(""));
+        return base64.replaceAll('=', '').replaceAll('+', '-').replaceAll('/', '_');
     }
 
     private string64ToArrayBuffer(string64: string): ArrayBuffer {
-        return new Uint8Array(atob(string64).split("").map(c => c.charCodeAt(0)));
+        const base64 = string64.replaceAll('-', '+').replaceAll('_', '/');
+        return new Uint8Array(atob(base64).split("").map(c => c.charCodeAt(0)));
     }
 
     private createArrayBuffer(size: number): ArrayBuffer {

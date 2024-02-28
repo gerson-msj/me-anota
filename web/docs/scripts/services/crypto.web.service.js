@@ -16,10 +16,9 @@ export default class CryptoWebService {
         const hashSenha = await this.obterHash(`${nomeBloco}${senha}`);
         return `${hashNomeBloco}.${hashSenha}`;
     }
-    async criptografar(senha, obj) {
+    async criptografar(senha, msg) {
         const keyData = this.encoder.encode(senha);
-        const dataJson = JSON.stringify(obj);
-        const data = this.encoder.encode(dataJson);
+        const data = this.encoder.encode(msg);
         const saltArray = this.createArrayBuffer(16);
         const ivArray = this.createArrayBuffer(16);
         const key = await this.getkey(keyData, saltArray);
@@ -39,14 +38,15 @@ export default class CryptoWebService {
         const key = await this.getkey(keyData, saltArray);
         const dataDecryptArray = await this.decrypt(key, dataArray, ivArray);
         const dataDecrypt = Array.from(new Uint8Array(dataDecryptArray)).map(b => String.fromCharCode(b)).join("");
-        const data = JSON.parse(dataDecrypt);
-        return data;
+        return dataDecrypt;
     }
     arrayBufferToString64(arrayBuffer) {
-        return btoa(Array.from(new Uint8Array(arrayBuffer)).map(b => String.fromCharCode(b)).join(""));
+        const base64 = btoa(Array.from(new Uint8Array(arrayBuffer)).map(b => String.fromCharCode(b)).join(""));
+        return base64.replaceAll('=', '').replaceAll('+', '-').replaceAll('/', '_');
     }
     string64ToArrayBuffer(string64) {
-        return new Uint8Array(atob(string64).split("").map(c => c.charCodeAt(0)));
+        const base64 = string64.replaceAll('-', '+').replaceAll('_', '/');
+        return new Uint8Array(atob(base64).split("").map(c => c.charCodeAt(0)));
     }
     createArrayBuffer(size) {
         const array = new Uint8Array(size);

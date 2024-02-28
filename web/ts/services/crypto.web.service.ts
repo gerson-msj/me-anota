@@ -22,10 +22,9 @@ export default class CryptoWebService {
         return `${hashNomeBloco}.${hashSenha}`;
     }
 
-    public async criptografar<T>(senha: string, obj: T): Promise<string> {
+    public async criptografar(senha: string, msg: string): Promise<string> {
         const keyData = this.encoder.encode(senha);
-        const dataJson = JSON.stringify(obj);
-        const data = this.encoder.encode(dataJson);
+        const data = this.encoder.encode(msg);
 
         const saltArray = this.createArrayBuffer(16);
         const ivArray = this.createArrayBuffer(16);
@@ -43,7 +42,7 @@ export default class CryptoWebService {
         return msgCrypt;
     }
 
-    public async descriptografar<T>(senha: string, msgCrypt: string): Promise<T> {
+    public async descriptografar(senha: string, msgCrypt: string): Promise<string> {
         const keyData = this.encoder.encode(senha);
         const [salt, iv, dataCrypt] = msgCrypt.split(".");
         const saltArray = this.string64ToArrayBuffer(salt);
@@ -53,16 +52,17 @@ export default class CryptoWebService {
         const key = await this.getkey(keyData, saltArray);
         const dataDecryptArray = await this.decrypt(key, dataArray, ivArray);
         const dataDecrypt = Array.from(new Uint8Array(dataDecryptArray)).map(b => String.fromCharCode(b)).join("");
-        const data = JSON.parse(dataDecrypt) as T;
-        return data;
+        return dataDecrypt;
     }
 
     private arrayBufferToString64(arrayBuffer: ArrayBuffer): string {
-        return btoa(Array.from(new Uint8Array(arrayBuffer)).map(b => String.fromCharCode(b)).join(""));
+        const base64 = btoa(Array.from(new Uint8Array(arrayBuffer)).map(b => String.fromCharCode(b)).join(""));
+        return base64.replaceAll('=', '').replaceAll('+', '-').replaceAll('/', '_');
     }
 
     private string64ToArrayBuffer(string64: string): ArrayBuffer {
-        return new Uint8Array(atob(string64).split("").map(c => c.charCodeAt(0)));
+        const base64 = string64.replaceAll('-', '+').replaceAll('_', '/');
+        return new Uint8Array(atob(base64).split("").map(c => c.charCodeAt(0)));
     }
 
     private createArrayBuffer(size: number): ArrayBuffer {

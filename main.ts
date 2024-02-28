@@ -4,15 +4,21 @@ import PageController from "./api/controllers/page.controller.ts";
 import CriarController from "./api/controllers/criar.controller.ts";
 import AbrirController from "./api/controllers/abrir.controller.ts";
 
+
 const page = BaseController.createInstance(PageController);
+const tokenRawKey = Deno.env.get("TOKENRAWKEY");
+console.log("tokenRawKey", tokenRawKey);
 
 const handler = async (request: Request): Promise<Response> => {
     
     const context = new Context(request);
+    
+    context.setTokenRawKey(tokenRawKey);
 
     if (context.isApiRequest) {
 
         await context.openKv();
+        
         const criar = new CriarController();
         const abrir = new AbrirController();
         const controllers = BaseController.enlistHandlers(

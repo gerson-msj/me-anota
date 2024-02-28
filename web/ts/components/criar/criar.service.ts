@@ -18,7 +18,6 @@ export default class CriarService extends BaseService {
         const bloco = { token: token, nome: cryptNomeBloco };
         const request = await this.api.doPost<{ ok: boolean, versionstamp: string }>(bloco);
         return request.ok;
-
     }
 
     public criarToken(nomeBloco: string, senha: string): Promise<string> {

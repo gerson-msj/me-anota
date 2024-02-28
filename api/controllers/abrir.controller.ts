@@ -23,11 +23,15 @@ export default class AbrirController extends BaseController {
 
         const nomeBloco = context.url.searchParams.get("nomeBloco")!;
         const data = await context.kv.get([nomeBloco, 0]);
-
         // validar senha.
         // criar jwt
         // retornar nome do bloco e jwt
-        return context.ok({ bloco: data.value as string | null });
+        
+        let bloco: { nome: string | null } = { nome: null };
+        if (data.value !== null)
+            bloco = data.value as { nome: string };
+
+        return context.ok({ nome: bloco.nome });
 
     }
 

@@ -5,12 +5,12 @@ export default class AbrirService extends BaseService {
     }
     async validarAcesso(nomeBloco, token) {
         const [hashNomeBloco, hashSenha] = token.split(".");
-        const data = await this.api.doGet(new URLSearchParams({ nomeBloco: hashNomeBloco }));
-        if (data.bloco == null)
+        const bloco = await this.api.doGet(new URLSearchParams({ nomeBloco: hashNomeBloco }));
+        if (bloco.nome === null)
             return false;
         try {
-            const bloco = await this.crypto.descriptografar(hashSenha, data.bloco);
-            return bloco.nome == nomeBloco;
+            const nomeBlocoDecrypt = await this.crypto.descriptografar(hashSenha, bloco.nome);
+            return nomeBlocoDecrypt == nomeBloco;
         }
         catch (error) {
             return false;
