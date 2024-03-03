@@ -1,50 +1,50 @@
 import BaseController from "./base.controller.ts";
 import Context from "./context.ts";
-import CryptoApiService from "../services/crypto.api.service.ts";
+import ServerCrypt from "../services/server.crypt.ts";
 
 export default class CriarController extends BaseController {
 
-    private crypto: CryptoApiService;
+    private crypt: ServerCrypt;
 
     constructor() {
         super();
-        this.crypto = new CryptoApiService();
+        this.crypt = new ServerCrypt();
     }
 
     public handle(context: Context): Promise<Response> {
         const isCriar = context.url.pathname === "/api/criar";
 
         if (isCriar && context.request.method == "GET")
-            return this.existeBloco(context);
+            return this.consultar(context);
 
         if (isCriar && context.request.method == "POST")
-            return this.criarBloco(context);
+            return this.criar(context);
 
         return this.nextHandle(context);
     }
 
-    async existeBloco(context: Context): Promise<Response> {
+    async consultar(context: Context): Promise<Response> {
 
-        if (!context.url.searchParams.has("nomeBloco"))
+        if (!context.url.searchParams.has("nomeHash"))
             return context.badRequest("Parâmetros inválidos");
 
-        const nomeBloco = context.url.searchParams.get("nomeBloco")!;
+        const nomeHash = context.url.searchParams.get("nomeHash")!;
+        
+        // remover após testes!!!!
+        await context.kv.delete([nomeHash, 0]);
 
-        await context.kv.delete([nomeBloco, 0]);
-
-        const data = await context.kv.get([nomeBloco, 0]);
+        const data = await context.kv.get([nomeHash, 0]);
         return context.ok({ existe: data.versionstamp !== null });
 
     }
 
-    async criarBloco(context: Context): Promise<Response> {
-        const bloco: { token: string, nome: string } = await context.request.json();
-        const [nomeBloco, senha] = bloco.token.split(".");
-        const senhaCrypto = await this.crypto.criptografarSenha(senha);
-        const k: Deno.KvKey = [nomeBloco, 0];
-        const v = { nome: bloco.nome, senha: senhaCrypto, ids: 0 };
+    async criar(context: Context): Promise<Response> {
+        const bloco: { nomeHash: string, senhaHash: string, nomeCryp: string } = await context.request.json();
+        const senhaSH = await this.crypt.criptografarSenha(bloco.senhaHash);
+        const k: Deno.KvKey = [bloco.nomeHash, 0];
+        const v = { nomeCryp: bloco.nomeCryp, senhaSH: senhaSH, ids: 0 };
         const kvData = await context.kv.set(k, v);
-        // criar e devolver jwt (nomeBloco, 15 min de validade).
-        return context.ok(kvData);
+        const token = kvData.ok ? await this.crypt.criarToken(bloco.nomeHash) : null;
+        return context.ok({ok: kvData.ok, token: token});
     }
 }

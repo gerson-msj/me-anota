@@ -1,28 +1,25 @@
-export default class ApiService {
-    private baseUrl: string;
-
+export default class ServerHandler {
+    baseUrl;
     /**
      *
      */
-    constructor(baseUrl: string) {
+    constructor(baseUrl) {
         this.baseUrl = `/api/${baseUrl}`;
     }
-
-    public async doGet<TResult>(searchParams: URLSearchParams): Promise<TResult> {
+    async doGet(searchParams) {
         const url = `${this.baseUrl}?${searchParams}`;
         const response = await fetch(url);
-        const data: TResult = await response.json();
+        const data = await response.json();
         return data;
     }
-
-    public async doPost<TResult>(obj: object): Promise<TResult> {
+    async doPost(obj) {
         const response = await fetch(this.baseUrl, {
             method: "POST",
             headers: { "content-type": "application/json; charset=utf-8" },
             body: JSON.stringify(obj)
         });
-
-        const data: TResult = await response.json();
+        const data = await response.json();
         return data;
     }
 }
+//# sourceMappingURL=server.handler.js.map

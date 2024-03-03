@@ -1,13 +1,9 @@
-export default class CryptoWebService {
+export default class ClientCrypt {
 
     private encoder: TextEncoder;
 
     constructor() {
         this.encoder = new TextEncoder();
-    }
-
-    public normalizar(text: string): string {
-        return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     }
 
     public async obterHash(text: string): Promise<string> {
@@ -16,22 +12,26 @@ export default class CryptoWebService {
         return hash;
     }
 
-    public async criarToken(nomeBloco: string, senha: string): Promise<string> {
-        const hashNomeBloco = await this.obterHash(this.normalizar(nomeBloco));
-        const hashSenha = await this.obterHash(`${nomeBloco}${senha}`);
-        return `${hashNomeBloco}.${hashSenha}`;
+    public obterHashNormalizado(text: string): Promise<string> {
+        return this.obterHash(this.normalizar(text));
     }
 
-    public async criptografar(senha: string, msg: string): Promise<string> {
-        const keyData = this.encoder.encode(senha);
+    public obterKey(senhaHash: string): Promise<CryptoKey> {
+        const keyData = this.encoder.encode(senhaHash);
+        return crypto.subtle.importKey(
+            "raw", keyData, "PBKDF2", false, ["deriveKey"]
+        );
+    }
+
+    public async criptografar(key: CryptoKey, msg: string): Promise<string> {
         const data = this.encoder.encode(msg);
 
         const saltArray = this.createArrayBuffer(16);
         const ivArray = this.createArrayBuffer(16);
 
-        const key = await this.getkey(keyData, saltArray);
+        const derivedKey = await this.getDerivedKey(key, saltArray);
         
-        const dataCryptArray = await this.encrypt(key, data, ivArray);
+        const dataCryptArray = await this.encrypt(derivedKey, data, ivArray);
 
         const salt = this.arrayBufferToString64(saltArray);
         const iv = this.arrayBufferToString64(ivArray);
@@ -42,17 +42,20 @@ export default class CryptoWebService {
         return msgCrypt;
     }
 
-    public async descriptografar(senha: string, msgCrypt: string): Promise<string> {
-        const keyData = this.encoder.encode(senha);
+    public async descriptografar(key: CryptoKey, msgCrypt: string): Promise<string> {
         const [salt, iv, dataCrypt] = msgCrypt.split(".");
         const saltArray = this.string64ToArrayBuffer(salt);
         const ivArray = this.string64ToArrayBuffer(iv);
         const dataArray = this.string64ToArrayBuffer(dataCrypt);
 
-        const key = await this.getkey(keyData, saltArray);
-        const dataDecryptArray = await this.decrypt(key, dataArray, ivArray);
+        const derivedKey = await this.getDerivedKey(key, saltArray);
+        const dataDecryptArray = await this.decrypt(derivedKey, dataArray, ivArray);
         const dataDecrypt = Array.from(new Uint8Array(dataDecryptArray)).map(b => String.fromCharCode(b)).join("");
         return dataDecrypt;
+    }
+
+    private normalizar(text: string): string {
+        return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     }
 
     private arrayBufferToString64(arrayBuffer: ArrayBuffer): string {
@@ -71,15 +74,11 @@ export default class CryptoWebService {
         return array;
     }
 
-    private async getkey(keyData: BufferSource, saltArray: ArrayBuffer): Promise<CryptoKey> {
-        const baseKey = await crypto.subtle.importKey(
-            "raw", keyData, "PBKDF2", false, ["deriveKey"]
-        );
-
+    private async getDerivedKey(key: CryptoKey, saltArray: ArrayBuffer): Promise<CryptoKey> {
         const keyAlgorithm: Pbkdf2Params = { name: "PBKDF2", hash: "SHA-256", salt: saltArray, iterations: 100000 };
         const derivedKeyType: AesDerivedKeyParams = { name: "AES-GCM", length: 256 };
-        const key = await crypto.subtle.deriveKey(keyAlgorithm, baseKey, derivedKeyType, true, ["encrypt", "decrypt"]);
-        return key;
+        const derivedKey = await crypto.subtle.deriveKey(keyAlgorithm, key, derivedKeyType, true, ["encrypt", "decrypt"]);
+        return derivedKey;
     }
 
     private async encrypt(key: CryptoKey, data: BufferSource, ivArray: ArrayBuffer): Promise<ArrayBuffer> {

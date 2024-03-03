@@ -7,7 +7,7 @@ import AnotacoesComponent from "./components/anotacoes/anotacoes.component.js";
 {
     const mainElement = document.querySelector("main") as HTMLElement;
     const loadedComponents: string[] = [];
-    
+
     let currentComponent: HTMLElement | null = null;
 
     function main() {
@@ -39,16 +39,16 @@ import AnotacoesComponent from "./components/anotacoes/anotacoes.component.js";
     function loadCriar() {
         const component = loadComponent("criar-component", "/criar", CriarComponent);
         component.addEventListener("voltar", () => loadHome());
-        component.addEventListener("abrirAnotacoes", (ev) => {
-            const token: string = (ev as CustomEvent).detail;
-            loadAnotacoes(token);
+        component.addEventListener("avancar", (ev) => {
+            const data: { key: CryptoKey, token: string } = (ev as CustomEvent).detail;
+            loadAnotacoes(data.key, data.token);
         });
     }
 
-    function loadAnotacoes(token: string) {
+    function loadAnotacoes(key: CryptoKey, token: string) {
         const component = loadComponent("anotacoes-component", "/anotacoes", AnotacoesComponent);
         component.addEventListener("sair", () => loadHome());
-        component.dispatchEvent(new CustomEvent("initializeToken", { detail: token }));
+        component.dispatchEvent(new CustomEvent("initializeData", { detail: { key: key, token: token } }));
     }
 
     function loadComponent(name: string, url: string, constructor: CustomElementConstructor): HTMLElement {

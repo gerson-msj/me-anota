@@ -1,4 +1,4 @@
-import Crypto from "./services/crypto.web.service.js";
+import Crypto from "./services/client.crypt.js";
 export default class BaseViewModel {
     shadow;
     crypto;
@@ -8,9 +8,6 @@ export default class BaseViewModel {
     }
     getElement(name) {
         return this.shadow.querySelector(`#${name}`);
-    }
-    criarToken(nomeBloco, senha) {
-        return this.crypto.criarToken(nomeBloco, senha);
     }
 }
 //# sourceMappingURL=base.viewmodel.js.map

@@ -18,17 +18,6 @@ export default class Context {
         this.url = new URL(request.url);
     }
 
-    public setTokenRawKey(tokenRawKey: string | undefined): void {
-        console.info("tokenRawKey: ", tokenRawKey);
-        if (tokenRawKey == undefined) {
-            console.error("TokenRawKey indefinido.");
-        }
-        else {
-            this._tokenRawKey = tokenRawKey;
-            console.log(tokenRawKey);
-        }
-    }
-
     public async openKv(): Promise<void> {
         if (this._kv === null)
             this._kv = await Deno.openKv();

@@ -18,7 +18,7 @@ export default class AbrirComponent extends BaseComponent<AbrirService, AbrirVie
     }
 
     async abrir(): Promise<void> {
-        const token = await this.viewModel.token();
+        const token = "";//await this.viewModel.token();
         const valido = await this.service.validarAcesso(this.viewModel.nomeBloco, token);
         this.viewModel.resultado = valido ? "Tudo certo!" : "Deu ruim!";
         

@@ -32,15 +32,15 @@ import AnotacoesComponent from "./components/anotacoes/anotacoes.component.js";
     function loadCriar() {
         const component = loadComponent("criar-component", "/criar", CriarComponent);
         component.addEventListener("voltar", () => loadHome());
-        component.addEventListener("abrirAnotacoes", (ev) => {
-            const token = ev.detail;
-            loadAnotacoes(token);
+        component.addEventListener("avancar", (ev) => {
+            const data = ev.detail;
+            loadAnotacoes(data.key, data.token);
         });
     }
-    function loadAnotacoes(token) {
+    function loadAnotacoes(key, token) {
         const component = loadComponent("anotacoes-component", "/anotacoes", AnotacoesComponent);
         component.addEventListener("sair", () => loadHome());
-        component.dispatchEvent(new CustomEvent("initializeToken", { detail: token }));
+        component.dispatchEvent(new CustomEvent("initializeData", { detail: { key: key, token: token } }));
     }
     function loadComponent(name, url, constructor) {
         if (!loadedComponents.includes(name)) {

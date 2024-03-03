@@ -12,33 +12,42 @@ export default class CriarComponent extends BaseComponent<CriarService, CriarVie
         this.initializeService(CriarService);
         this.initializeViewModel(CriarViewModel);
 
-        this.viewModel.onVerificar = async () => await this.verificar();
+        this.viewModel.onConsultar = async (nomeHash: string) => await this.consultar(nomeHash);
         this.viewModel.onVoltar = () => this.dispatchEvent(new Event("voltar"));
-        this.viewModel.onCriar = async () => await this.criar();
+
+        this.viewModel.onCriar = async (nomeHash: string, senhaHash: string, nome: string) =>
+            await this.criar(nomeHash, senhaHash, nome);
     }
 
-    async verificar(): Promise<void> {
-        const token = await this.viewModel.token();
-        try {    
-            const existe = await this.service.existeBloco(token);
-            this.viewModel.exibirSenha(!existe);
-            this.viewModel.resultadoVerificacao = existe ? `A nota ${this.viewModel.nomeBloco} já existe.` : `A nota ${this.viewModel.nomeBloco} está disponível.`;
+    async consultar(nomeHash: string): Promise<void> {
+        try {
+            const existe = await this.service.consultar(nomeHash);
+            if (existe)
+                this.viewModel.reportarExistenciaConsultar();
+            else
+                this.viewModel.solicitarSenha();
         } catch (error) {
-            console.error("Erro: ", error);
-            this.viewModel.exibirSenha(false);
-            this.viewModel.resultadoVerificacao = "Não foi possível verificar a nota no momento.";
+            console.error("Erro Consultar: ", error);
+            this.viewModel.reportarErroConsultar();
         }
     }
 
-    async criar(): Promise<void> {
-        const token = await this.viewModel.token();
-        const ok = await this.service.criarBloco(this.viewModel.nomeBloco, token);
-        if (ok) {
-            this.dispatchEvent(new CustomEvent("abrirAnotacoes", { detail: token }));
+    async criar(nomeHash: string, senhaHash: string, nome: string) {
+        try {
+            const response = await this.service.criar(nomeHash, senhaHash, nome);
+            if (response.ok) {
+                this.dispatchEvent(new CustomEvent("avancar", { detail: { 
+                    key: response.key!, 
+                    token: response.token! 
+                }}));
+            }
+            else {
+                this.viewModel.reportarExistenciaCriar();
+            }
+        } catch (error) {
+            console.error("Erro Criar: ", error);
+            this.viewModel.reportarErroCriar();
         }
-        else
-            console.log("ok: ", ok);
-
     }
 
 }

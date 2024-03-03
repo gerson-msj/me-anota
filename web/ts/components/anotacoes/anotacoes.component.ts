@@ -4,13 +4,15 @@ import BaseComponent from "../../base.component.js";
 
 export default class AnotacoesComponent extends BaseComponent<AnotacoesService, AnotacoesViewModel> {
 
+    private key: CryptoKey | null = null;
     private token: string | null = null;
-    
+
+
     constructor() {
         super("anotacoes");
 
-        this.addEventListener("initializeToken", (ev) => {
-            this.initializeToken((ev as CustomEvent).detail as string);
+        this.addEventListener("initializeData", (ev) => {
+            this.initializeData(ev as CustomEvent);
         });
     }
 
@@ -21,8 +23,11 @@ export default class AnotacoesComponent extends BaseComponent<AnotacoesService, 
         this.viewModel.onSair = () => this.dispatchEvent(new Event("sair"));
     }
 
-    private initializeToken(token: string) {
-        this.token = token;
+    private initializeData(ev: CustomEvent) {
+        const data: { key: CryptoKey, token: string } = ev.detail;
+        this.key = data.key;
+        this.token = data.token;
+        console.log("anotacoes.key: ", this.key);
         console.log("anotacoes.token: ", this.token);
     }
 }

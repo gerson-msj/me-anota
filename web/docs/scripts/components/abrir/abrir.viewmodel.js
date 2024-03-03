@@ -24,10 +24,6 @@ export default class AbrirViewModel extends BaseViewModel {
         this._senha.addEventListener("keyup", () => this.permitirAbrir());
         this._abrir.addEventListener("click", () => this.onAbrir());
     }
-    token() {
-        return this.criarToken(this._nomeBloco.value, this._senha.value);
-    }
-    ;
     permitirAbrir() {
         this._abrir.disabled = this._nomeBloco.value.trim() === "" || this._senha.value.trim() === "";
     }

@@ -6,22 +6,27 @@ export default class CriarService extends BaseService {
         super("criar");
     }
 
-    public async existeBloco(token: string): Promise<boolean> {
-        const hashNomeBloco = token.split(".")[0];
-        const response = await this.api.doGet<{ existe: boolean }>(new URLSearchParams({ nomeBloco: hashNomeBloco }));
+    public async consultar(nomeHash: string): Promise<boolean> {
+        const response = await this.handler.doGet<{ existe: boolean }>(new URLSearchParams({ nomeHash: nomeHash }));
         return response.existe;
     }
 
-    public async criarBloco(nomeBloco: string, token: string): Promise<boolean> {
-        const hashSenha = token.split(".")[1];
-        const cryptNomeBloco = await this.crypto.criptografar(hashSenha, nomeBloco);
-        const bloco = { token: token, nome: cryptNomeBloco };
-        const request = await this.api.doPost<{ ok: boolean, versionstamp: string }>(bloco);
-        return request.ok;
-    }
-
-    public criarToken(nomeBloco: string, senha: string): Promise<string> {
-        return this.crypto.criarToken(nomeBloco, senha);
+    public async criar(nomeHash: string, senhaHash: string, nome: string): Promise<{ ok: boolean, key: CryptoKey | null, token: string | null }> {
+        const key = await this.crypt.obterKey(senhaHash);
+        const nomeCryp = await this.crypt.criptografar(key, nome);
+        const bloco = { 
+            nomeHash: nomeHash, 
+            senhaHash: senhaHash, 
+            nomeCryp: nomeCryp 
+        };
+        
+        const response = await this.handler.doPost<{ ok: boolean, token: string | null }>(bloco);
+        
+        return {
+            ok: response.ok,
+            key: response.ok ? key : null,
+            token: response.token
+        };
     }
 
 }

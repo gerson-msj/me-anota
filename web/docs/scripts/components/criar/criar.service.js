@@ -3,20 +3,24 @@ export default class CriarService extends BaseService {
     constructor() {
         super("criar");
     }
-    async existeBloco(token) {
-        const hashNomeBloco = token.split(".")[0];
-        const response = await this.api.doGet(new URLSearchParams({ nomeBloco: hashNomeBloco }));
+    async consultar(nomeHash) {
+        const response = await this.handler.doGet(new URLSearchParams({ nomeHash: nomeHash }));
         return response.existe;
     }
-    async criarBloco(nomeBloco, token) {
-        const hashSenha = token.split(".")[1];
-        const cryptNomeBloco = await this.crypto.criptografar(hashSenha, nomeBloco);
-        const bloco = { token: token, nome: cryptNomeBloco };
-        const request = await this.api.doPost(bloco);
-        return request.ok;
-    }
-    criarToken(nomeBloco, senha) {
-        return this.crypto.criarToken(nomeBloco, senha);
+    async criar(nomeHash, senhaHash, nome) {
+        const key = await this.crypt.obterKey(senhaHash);
+        const nomeCryp = await this.crypt.criptografar(key, nome);
+        const bloco = {
+            nomeHash: nomeHash,
+            senhaHash: senhaHash,
+            nomeCryp: nomeCryp
+        };
+        const response = await this.handler.doPost(bloco);
+        return {
+            ok: response.ok,
+            key: response.ok ? key : null,
+            token: response.token
+        };
     }
 }
 //# sourceMappingURL=criar.service.js.map

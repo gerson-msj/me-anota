@@ -36,10 +36,6 @@ export default class AbrirViewModel extends BaseViewModel {
 
     }
 
-    public token(): Promise<string> { 
-        return this.criarToken(this._nomeBloco.value, this._senha.value); 
-    };
-
     private permitirAbrir() {
         this._abrir.disabled = this._nomeBloco.value.trim() === "" || this._senha.value.trim() === "";
     }

@@ -8,31 +8,40 @@ export default class CriarComponent extends BaseComponent {
     initialize() {
         this.initializeService(CriarService);
         this.initializeViewModel(CriarViewModel);
-        this.viewModel.onVerificar = async () => await this.verificar();
+        this.viewModel.onConsultar = async (nomeHash) => await this.consultar(nomeHash);
         this.viewModel.onVoltar = () => this.dispatchEvent(new Event("voltar"));
-        this.viewModel.onCriar = async () => await this.criar();
+        this.viewModel.onCriar = async (nomeHash, senhaHash, nome) => await this.criar(nomeHash, senhaHash, nome);
     }
-    async verificar() {
-        const token = await this.viewModel.token();
+    async consultar(nomeHash) {
         try {
-            const existe = await this.service.existeBloco(token);
-            this.viewModel.exibirSenha(!existe);
-            this.viewModel.resultadoVerificacao = existe ? `A nota ${this.viewModel.nomeBloco} já existe.` : `A nota ${this.viewModel.nomeBloco} está disponível.`;
+            const existe = await this.service.consultar(nomeHash);
+            if (existe)
+                this.viewModel.reportarExistenciaConsultar();
+            else
+                this.viewModel.solicitarSenha();
         }
         catch (error) {
-            console.error("Erro: ", error);
-            this.viewModel.exibirSenha(false);
-            this.viewModel.resultadoVerificacao = "Não foi possível verificar a nota no momento.";
+            console.error("Erro Consultar: ", error);
+            this.viewModel.reportarErroConsultar();
         }
     }
-    async criar() {
-        const token = await this.viewModel.token();
-        const ok = await this.service.criarBloco(this.viewModel.nomeBloco, token);
-        if (ok) {
-            this.dispatchEvent(new CustomEvent("abrirAnotacoes", { detail: token }));
+    async criar(nomeHash, senhaHash, nome) {
+        try {
+            const response = await this.service.criar(nomeHash, senhaHash, nome);
+            if (response.ok) {
+                this.dispatchEvent(new CustomEvent("avancar", { detail: {
+                        key: response.key,
+                        token: response.token
+                    } }));
+            }
+            else {
+                this.viewModel.reportarExistenciaCriar();
+            }
         }
-        else
-            console.log("ok: ", ok);
+        catch (error) {
+            console.error("Erro Criar: ", error);
+            this.viewModel.reportarErroCriar();
+        }
     }
 }
 //# sourceMappingURL=criar.component.js.map

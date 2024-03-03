@@ -1,58 +1,76 @@
 import BaseViewModel from "../../base.viewmodel.js";
 export default class CriarViewModel extends BaseViewModel {
-    _voltar;
-    _nomeBloco;
-    get nomeBloco() { return this._nomeBloco.value; }
-    _verificar;
-    _divSenha;
-    _resultadoVerificacao;
-    set resultadoVerificacao(value) { this._resultadoVerificacao.innerText = value; }
-    _senha;
-    _senhaConfirmacao;
-    _criar;
-    onVerificar = () => { };
+    voltar;
+    nome;
+    consultar;
+    resultadoVerificacao;
+    divSenha;
+    senha;
+    senhaConfirmacao;
+    criar;
+    onConsultar = (nomeHash) => { };
     onVoltar = () => { };
-    onCriar = () => { };
+    onCriar = (nomeHash, senhaHash, nome) => { };
     constructor(shadow) {
         super(shadow);
-        this._voltar = this.getElement("voltar");
-        this._nomeBloco = this.getElement("nome");
-        this._verificar = this.getElement("verificar");
-        this._divSenha = this.getElement("divSenha");
-        this._resultadoVerificacao = this.getElement("resultadoVerificacao");
-        this._senha = this.getElement("senha");
-        this._senhaConfirmacao = this.getElement("senhaConfirmacao");
-        this._criar = this.getElement("criar");
-        this.definirEventos();
+        this.voltar = this.getElement("voltar");
+        this.nome = this.getElement("nome");
+        this.consultar = this.getElement("consultar");
+        this.resultadoVerificacao = this.getElement("resultadoVerificacao");
+        this.divSenha = this.getElement("divSenha");
+        this.senha = this.getElement("senha");
+        this.senhaConfirmacao = this.getElement("senhaConfirmacao");
+        this.criar = this.getElement("criar");
+        this.eventosInternos();
+        this.eventosExternos();
     }
-    token() {
-        return this.criarToken(this._nomeBloco.value, this._senha.value);
+    solicitarSenha() {
+        this.resultadoVerificacao.innerText = `A nota ${this.nome.value} está disponível.`;
+        this.nome.disabled = true;
+        this.consultar.disabled = true;
+        this.divSenha.classList.remove("ocultar");
     }
-    ;
-    exibirSenha(exibir) {
-        this._nomeBloco.disabled = exibir;
-        if (exibir) {
-            this._divSenha.classList.remove("ocultar");
-            this._verificar.classList.add("ocultar");
-        }
-        else {
-            this._divSenha.classList.add("ocultar");
-            this._verificar.classList.remove("ocultar");
-        }
+    reportarExistenciaConsultar() {
+        this.resultadoVerificacao.innerText = `A nota ${this.nome.value} já existe.`;
+        this.nome.focus;
     }
-    definirEventos() {
-        this._voltar.addEventListener("click", (ev) => {
-            this.onVoltar();
-            ev.preventDefault;
-        });
-        this._nomeBloco.addEventListener("keyup", () => this._verificar.disabled = this._nomeBloco.value == "");
-        this._verificar.addEventListener("click", () => this.onVerificar());
-        this._senha.addEventListener("keyup", () => this.desativarCriar());
-        this._senhaConfirmacao.addEventListener("keyup", () => this.desativarCriar());
-        this._criar.addEventListener("click", () => this.onCriar());
+    reportarExistenciaCriar() {
+        this.resultadoVerificacao.innerText = `A nota ${this.nome.value} foi crianda enquando você definia a senha, tente outro nome.`;
+        this.nome.disabled = false;
+        this.nome.focus;
+        this.consultar.disabled = false;
+        this.senha.value = "";
+        this.senhaConfirmacao.value = "";
+        this.divSenha.classList.add("ocultar");
+    }
+    reportarErroConsultar() {
+        this.resultadoVerificacao.innerText = "Não foi possível verificar a nota no momento.";
+    }
+    reportarErroCriar() {
+        this.resultadoVerificacao.innerText = "Não foi possível criar a nota no momento.";
+    }
+    eventosInternos() {
+        this.nome.addEventListener("keyup", () => this.consultar.disabled = this.nome.value == "");
+        this.senha.addEventListener("keyup", () => this.desativarCriar());
+        this.senhaConfirmacao.addEventListener("keyup", () => this.desativarCriar());
     }
     desativarCriar() {
-        this._criar.disabled = this._senha.value === "" || this._senha.value !== this._senhaConfirmacao.value;
+        this.criar.disabled = this.senha.value === "" || this.senha.value !== this.senhaConfirmacao.value;
+    }
+    eventosExternos() {
+        this.voltar.addEventListener("click", (ev) => {
+            ev.preventDefault;
+            this.onVoltar();
+        });
+        this.consultar.addEventListener("click", async () => {
+            const nomeHash = await this.crypto.obterHashNormalizado(this.nome.value);
+            this.onConsultar(nomeHash);
+        });
+        this.criar.addEventListener("click", async () => {
+            const nomeHash = await this.crypto.obterHashNormalizado(this.nome.value);
+            const senhaHash = await this.crypto.obterHash(this.senha.value);
+            this.onCriar(nomeHash, senhaHash, this.nome.value);
+        });
     }
 }
 //# sourceMappingURL=criar.viewmodel.js.map

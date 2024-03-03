@@ -1,13 +1,13 @@
-import CryptoWebService from "./services/crypto.web.service.js";
-import ApiService from "./services/api.js";
+import ClientCrypt from "./services/client.crypt.js";
+import ServerHandler from "./services/server.handler.js";
 
 export default abstract class BaseService {
     
-    protected crypto: CryptoWebService;
-    protected api: ApiService;
+    protected crypt: ClientCrypt;
+    protected handler: ServerHandler;
 
     constructor(baseUrl: string) {
-        this.crypto = new CryptoWebService();
-        this.api = new ApiService(baseUrl);
+        this.crypt = new ClientCrypt();
+        this.handler = new ServerHandler(baseUrl);
     }
 }

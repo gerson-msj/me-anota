@@ -1,11 +1,11 @@
-import CryptoWebService from "./services/crypto.web.service.js";
-import ApiService from "./services/api.js";
+import ClientCrypt from "./services/client.crypt.js";
+import ServerHandler from "./services/server.handler.js";
 export default class BaseService {
-    crypto;
-    api;
+    crypt;
+    handler;
     constructor(baseUrl) {
-        this.crypto = new CryptoWebService();
-        this.api = new ApiService(baseUrl);
+        this.crypt = new ClientCrypt();
+        this.handler = new ServerHandler(baseUrl);
     }
 }
 //# sourceMappingURL=base.service.js.map
