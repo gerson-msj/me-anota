@@ -9,12 +9,20 @@ export default class AbrirComponent extends BaseComponent {
         this.initializeService(AbrirService);
         this.initializeViewModel(AbrirViewModel);
         this.viewModel.onVoltar = () => this.dispatchEvent(new Event("voltar"));
-        this.viewModel.onAbrir = () => this.abrir();
+        this.viewModel.onAbrir = async (nomeHash, senhaHash) => await this.abrir(nomeHash, senhaHash);
     }
-    async abrir() {
-        const token = ""; //await this.viewModel.token();
-        const valido = await this.service.validarAcesso(this.viewModel.nomeBloco, token);
-        this.viewModel.resultado = valido ? "Tudo certo!" : "Deu ruim!";
+    async abrir(nomeHash, senhaHash) {
+        try {
+            const result = await this.service.abrir(nomeHash, senhaHash);
+            if (result.ok)
+                this.dispatchEvent(new CustomEvent("avancar", { detail: { key: result.key, token: result.token } }));
+            else
+                this.viewModel.reportarInexistente();
+        }
+        catch (error) {
+            console.error(error);
+            this.viewModel.reportarErro();
+        }
     }
 }
 //# sourceMappingURL=abrir.component.js.map

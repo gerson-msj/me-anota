@@ -14,7 +14,15 @@ export default class ServerCrypt {
         return `${salt}.${senhaCrypto}`;
     }
 
-    public async criarToken(nomeBloco: string): Promise<string> {
+    public async validarSenha(senha: string, senhaSH: string): Promise<boolean> {
+        const [salt, senhaCrypto] = senhaSH.split(".");
+        const senhaData = this.encoder.encode(`${senha}+${salt}`);
+        const senhaBuffer = await crypto.subtle.digest("SHA-256", senhaData);
+        const senhaCryptoComparacao = this.bufferToBase64(senhaBuffer);
+        return senhaCrypto === senhaCryptoComparacao;
+    }
+
+    public async criarToken(nomeHash: string): Promise<string> {
         const key = await this.getTokenKey();
         
         const header = this.stringToBase64(JSON.stringify({ "alg": "HS256", "typ": "JWT" }));
@@ -22,7 +30,7 @@ export default class ServerCrypt {
         const expTime = new Date();
         expTime.setHours(expTime.getHours() + 1);
         const exp = Math.floor(expTime.getTime() / 1000);
-        const payload = this.stringToBase64(JSON.stringify({ "sub": nomeBloco, "exp": exp }));
+        const payload = this.stringToBase64(JSON.stringify({ "sub": nomeHash, "exp": exp }));
         
         const data = this.encoder.encode(`${header}.${payload}`);
 

@@ -6,20 +6,13 @@ export default class AbrirService extends BaseService {
         super("abrir");
     }
 
-    async validarAcesso(nomeBloco: string, token: string): Promise<boolean> {
-        const [hashNomeBloco, hashSenha] = token.split(".");
-        
-        const bloco = await this.handler.doGet<{ nome: string | null }>(new URLSearchParams({ nomeBloco: hashNomeBloco }));
-        
-        if(bloco.nome === null)
-            return false;
-
-        try {
-            const nomeBlocoDecrypt = "";//await this.crypt.descriptografar("hashSenha", bloco.nome);
-            return nomeBlocoDecrypt == nomeBloco;
-        } catch (error) {
-            return false;
-        }
+    public async abrir(nomeHash: string, senhaHash: string): Promise<{ ok: boolean, key: CryptoKey | null, token: string | null }> {
+        const response = await this.handler.doGet<{ ok: boolean, token: string | null }>(new URLSearchParams({ nomeHash: nomeHash, senhaHash: senhaHash }));
+        return {
+            ok: response.ok,
+            key: response.ok ? await this.crypt.obterKey(senhaHash) : null,
+            token: response.token
+        };
     }
 
 }

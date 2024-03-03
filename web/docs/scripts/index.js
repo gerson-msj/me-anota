@@ -27,10 +27,13 @@ import AnotacoesComponent from "./components/anotacoes/anotacoes.component.js";
     }
     function loadAbrir() {
         const component = loadComponent("abrir-component", "/abrir", AbrirComponent);
-        component.addEventListener("voltar", () => loadHome());
+        addEventListenerNavegar(component);
     }
     function loadCriar() {
         const component = loadComponent("criar-component", "/criar", CriarComponent);
+        addEventListenerNavegar(component);
+    }
+    function addEventListenerNavegar(component) {
         component.addEventListener("voltar", () => loadHome());
         component.addEventListener("avancar", (ev) => {
             const data = ev.detail;

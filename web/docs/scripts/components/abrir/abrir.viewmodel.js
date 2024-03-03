@@ -1,31 +1,41 @@
 import BaseViewModel from "../../base.viewmodel.js";
 export default class AbrirViewModel extends BaseViewModel {
-    _voltar;
-    _nomeBloco;
-    _senha;
-    _abrir;
-    _resultado;
-    get nomeBloco() { return this._nomeBloco.value; }
-    set resultado(value) { this._resultado.innerText = value; }
+    voltar;
+    nome;
+    senha;
+    abrir;
+    resultado;
     onVoltar = () => { };
-    onAbrir = () => { };
+    onAbrir = (nomeHash, senhaHash) => { };
     constructor(shadow) {
         super(shadow);
-        this._voltar = this.getElement("voltar");
-        this._nomeBloco = this.getElement("nomeBloco");
-        this._senha = this.getElement("senha");
-        this._abrir = this.getElement("abrir");
-        this._resultado = this.getElement("resultado");
-        this._voltar.addEventListener("click", ev => {
+        this.voltar = this.getElement("voltar");
+        this.nome = this.getElement("nome");
+        this.senha = this.getElement("senha");
+        this.abrir = this.getElement("abrir");
+        this.resultado = this.getElement("resultado");
+        this.voltar.addEventListener("click", ev => {
             ev.preventDefault();
             this.onVoltar();
         });
-        this._nomeBloco.addEventListener("keyup", () => this.permitirAbrir());
-        this._senha.addEventListener("keyup", () => this.permitirAbrir());
-        this._abrir.addEventListener("click", () => this.onAbrir());
+        this.nome.addEventListener("keyup", () => this.permitirAbrir());
+        this.senha.addEventListener("keyup", () => this.permitirAbrir());
+        this.abrir.addEventListener("click", async () => {
+            const [nomeHash, senhaHash] = await Promise.all([
+                this.crypto.obterHashNormalizado(this.nome.value),
+                this.crypto.obterHash(this.senha.value)
+            ]);
+            this.onAbrir(nomeHash, senhaHash);
+        });
+    }
+    reportarInexistente() {
+        this.resultado.innerText = "Não foi possível abrir o bloco de anotações informado!";
+    }
+    reportarErro() {
+        this.resultado.innerText = "Não foi possível consultar o bloco informado neste momento.";
     }
     permitirAbrir() {
-        this._abrir.disabled = this._nomeBloco.value.trim() === "" || this._senha.value.trim() === "";
+        this.abrir.disabled = this.nome.value.trim() === "" || this.senha.value.trim() === "";
     }
 }
 //# sourceMappingURL=abrir.viewmodel.js.map

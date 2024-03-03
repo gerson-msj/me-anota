@@ -1,37 +1,45 @@
 import BaseController from "./base.controller.ts";
 import Context from "./context.ts";
+import ServerCrypt from "../services/server.crypt.ts";
 
 export default class AbrirController extends BaseController {
 
+    private crypt: ServerCrypt;
+
     constructor() {
         super();
+        this.crypt = new ServerCrypt();
     }
 
     public handle(context: Context): Promise<Response> {
         const isAbrir = context.url.pathname === "/api/abrir";
 
         if (isAbrir && context.request.method == "GET")
-            return this.obterBloco(context);
+            return this.abrir(context);
 
         return this.nextHandle(context);
     }
 
-    async obterBloco(context: Context): Promise<Response> {
-        // receber senha.
-        if (!context.url.searchParams.has("nomeBloco"))
+    async abrir(context: Context): Promise<Response> {
+
+        if (!context.url.searchParams.has("nomeHash") || !context.url.searchParams.has("senhaHash"))
             return context.badRequest("Parâmetros inválidos");
 
-        const nomeBloco = context.url.searchParams.get("nomeBloco")!;
-        const data = await context.kv.get([nomeBloco, 0]);
-        // validar senha.
-        // criar jwt
-        // retornar nome do bloco e jwt
-        
-        let bloco: { nome: string | null } = { nome: null };
-        if (data.value !== null)
-            bloco = data.value as { nome: string };
+        const nomeHash = context.url.searchParams.get("nomeHash")!;
+        const senhaHash = context.url.searchParams.get("senhaHash")!;
 
-        return context.ok({ nome: bloco.nome });
+        const data = await context.kv.get([nomeHash, 0]);
+
+        const result: { ok: boolean, token: string | null } = { ok: false, token: null };
+
+        if (data.value !== null) {
+            const bloco = data.value as { nomeCryp: string, senhaSH: string, ids: number };
+            const senhaValida = await this.crypt.validarSenha(senhaHash, bloco.senhaSH);
+            result.ok = senhaValida;
+            result.token = senhaValida ? await this.crypt.criarToken(nomeHash) : null;
+        }
+
+        return context.ok(result);
 
     }
 
