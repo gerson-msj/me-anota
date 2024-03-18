@@ -1,7 +1,40 @@
 <template>
+    <h3>Nome do bloco</h3>
     <nav>
+        <a href="" id="novo">Nova Anotação</a>
+        |
         <a href="" id="sair">Sair</a>
     </nav>
 
-    <h3>Anotações</h3>
+    <div id="lista">
+        <div>
+            <h4>Anotação 01</h4>
+        </div>
+        <div><h4>Anotação 02</h4></div>
+        <div><h4>Anotação 02</h4></div>
+        <div><h4>Anotação 02</h4></div>
+        <div><h4>Anotação 02</h4></div>
+        <div><h4>Anotação 02</h4></div>
+        <div><h4>Anotação 02</h4></div>
+        <div><h4>Anotação 02</h4></div><div><h4>Anotação 02</h4></div><div><h4>Anotação 02</h4></div>
+        <div><h4>Anotação 02</h4></div>
+        <div><h4>Anotação 02</h4></div>
+        <div><h4>Anotação 02</h4></div>
+    </div>
+
+    <div id="backdrop">
+        <div id="box">
+            
+                    <label for="titulo">Anotação</label>
+                    <input type="text" autocomplete="off" placeholder="Título" id="titulo">
+            
+                    <textarea id="conteudo" rows="15"></textarea>
+            
+                    <button type="button" id="salvar">Salvar</button>
+                    <button type="button" id="cancelar">Cancelar</button>
+            
+            
+        </div>
+    </div>
+
 </template>

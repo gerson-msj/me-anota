@@ -17,6 +17,9 @@ import AnotacoesComponent from "./components/anotacoes/anotacoes.component.js";
             loadAbrir();
         else if (location.pathname == "/criar")
             loadCriar();
+        // remover após model
+        else if (location.pathname == '/anotacoes')
+            loadAnotacoes(null, null);
         else
             loadHome();
     }

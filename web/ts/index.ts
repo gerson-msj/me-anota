@@ -21,6 +21,11 @@ import AnotacoesComponent from "./components/anotacoes/anotacoes.component.js";
             loadAbrir();
         else if (location.pathname == "/criar")
             loadCriar();
+
+        // remover após model
+        else if(location.pathname == '/anotacoes')
+            loadAnotacoes(null, null);
+
         else
             loadHome();
     }
@@ -49,7 +54,7 @@ import AnotacoesComponent from "./components/anotacoes/anotacoes.component.js";
         });
     }
 
-    function loadAnotacoes(key: CryptoKey, token: string) {
+    function loadAnotacoes(key: CryptoKey | null, token: string | null) {
         const component = loadComponent("anotacoes-component", "/anotacoes", AnotacoesComponent);
         component.addEventListener("sair", () => loadHome());
         component.dispatchEvent(new CustomEvent("initializeData", { detail: { key: key, token: token } }));

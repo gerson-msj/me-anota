@@ -1,0 +1,57 @@
+#lista {
+    width: calc(100% - 20px);
+    height: 350px;
+    border: 1px solid #999;
+    border-radius: 5px;
+    padding: 0px;
+    margin: 10px;
+    overflow-y: auto;
+}
+
+#lista div{
+    background-color: #444;
+    width: calc(100% - 6px);
+    margin: 3px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+h4 {
+    padding: 0px;
+    margin: 0px;
+}
+
+#backdrop {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    width: 100vw;
+    height: var(--main-height);
+    backdrop-filter: blur(4px) opacity(96%); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+    display: none;
+}
+
+#backdrop #box {
+    background-color: #333;
+    width: 85%;
+    height: 95%;
+    border: 1px solid #999;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}
+
+input, textarea, button {
+    margin: 5px;
+}
+
+textarea {
+    resize: none;
+    
+}
