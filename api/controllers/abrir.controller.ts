@@ -28,13 +28,13 @@ export default class AbrirController extends BaseController {
         const nomeHash = context.url.searchParams.get("nomeHash")!;
         const senhaHash = context.url.searchParams.get("senhaHash")!;
 
-        const data = await context.kv.get([nomeHash, 0]);
+        const v = await context.kv.get([nomeHash, 0]);
 
         const result: { ok: boolean, token: string | null } = { ok: false, token: null };
 
-        if (data.value !== null) {
-            const bloco = data.value as { nomeCryp: string, senhaSH: string, ids: number };
-            const senhaValida = await this.crypt.validarSenha(senhaHash, bloco.senhaSH);
+        if (v.value !== null) {
+            const data = v.value as { senhaSH: string };
+            const senhaValida = await this.crypt.validarSenha(senhaHash, data.senhaSH);
             result.ok = senhaValida;
             result.token = senhaValida ? await this.crypt.criarToken(nomeHash) : null;
         }

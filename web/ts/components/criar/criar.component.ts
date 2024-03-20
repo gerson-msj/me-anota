@@ -32,9 +32,9 @@ export default class CriarComponent extends BaseComponent<CriarService, CriarVie
         }
     }
 
-    async criar(nomeHash: string, senhaHash: string, nome: string) {
+    async criar(nomeHash: string, senhaHash: string, blocoCrypt: string) {
         try {
-            const response = await this.service.criar(nomeHash, senhaHash, nome);
+            const response = await this.service.criar(nomeHash, senhaHash, blocoCrypt);
             if (response.ok) {
                 this.dispatchEvent(new CustomEvent("avancar", { detail: { 
                     key: response.key!, 

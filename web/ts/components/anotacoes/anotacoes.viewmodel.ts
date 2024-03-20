@@ -13,6 +13,7 @@ export default class AnotacoesViewModel extends BaseViewModel {
         this._sair.addEventListener("click", ev => {
             ev.preventDefault();
             this.onSair();
+            
         });
 
     }

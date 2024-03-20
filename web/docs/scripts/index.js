@@ -46,7 +46,12 @@ import AnotacoesComponent from "./components/anotacoes/anotacoes.component.js";
     function loadAnotacoes(key, token) {
         const component = loadComponent("anotacoes-component", "/anotacoes", AnotacoesComponent);
         component.addEventListener("sair", () => loadHome());
-        component.dispatchEvent(new CustomEvent("initializeData", { detail: { key: key, token: token } }));
+        component.addEventListener("initialized", () => {
+            component.dispatchEvent(new CustomEvent("initializeData", { detail: { key: key, token: token } }));
+        });
+        //const anotacoesComponent = component as AnotacoesComponent;
+        //anotacoesComponent.initializeData(new CustomEvent("initializeData", { detail: { key: key, token: token } }));
+        //component.dispatchEvent(new CustomEvent("initializeData", { detail: { key: key, token: token } }));
     }
     function loadComponent(name, url, constructor) {
         if (!loadedComponents.includes(name)) {

@@ -7,18 +7,17 @@ export default class CriarService extends BaseService {
         const response = await this.handler.doGet(new URLSearchParams({ nomeHash: nomeHash }));
         return response.existe;
     }
-    async criar(nomeHash, senhaHash, nome) {
-        const key = await this.crypt.obterKey(senhaHash);
-        const nomeCryp = await this.crypt.criptografar(key, nome);
-        const bloco = {
+    async criar(nomeHash, senhaHash, blocoCrypt) {
+        ;
+        const data = {
             nomeHash: nomeHash,
             senhaHash: senhaHash,
-            nomeCryp: nomeCryp
+            blocoCrypt: blocoCrypt
         };
-        const response = await this.handler.doPost(bloco);
+        const response = await this.handler.doPost(data);
         return {
             ok: response.ok,
-            key: response.ok ? key : null,
+            key: response.ok ? await this.crypt.obterKey(senhaHash) : null,
             token: response.token
         };
     }

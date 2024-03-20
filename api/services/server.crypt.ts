@@ -28,7 +28,8 @@ export default class ServerCrypt {
         const header = this.stringToBase64(JSON.stringify({ "alg": "HS256", "typ": "JWT" }));
 
         const expTime = new Date();
-        expTime.setHours(expTime.getHours() + 1);
+        //expTime.setHours(expTime.getHours() + 1);
+        expTime.setHours(expTime.getHours() + 10000);
         const exp = Math.floor(expTime.getTime() / 1000);
         const payload = this.stringToBase64(JSON.stringify({ "sub": nomeHash, "exp": exp }));
         
@@ -39,6 +40,27 @@ export default class ServerCrypt {
 
         const token = `${header}.${payload}.${sign}`;
         return token;
+    }
+
+    public async tokenValido(token: string): Promise<boolean> {
+        const [header, payload, sign] = token.split(".");
+        const key = await this.getTokenKey();
+        const data = this.encoder.encode(`${header}.${payload}`);
+        const signArray = this.base64ToBuffer(sign);
+        const valido = await crypto.subtle.verify("HMAC", key, signArray, data);
+        return valido;
+    }
+
+    public tokenExpirado(token: string): boolean {
+        const payload: { sub: string, exp: number } = JSON.parse(atob(token.split(".")[1]));
+        const currTime = Math.floor((new Date()).getTime() / 1000);
+        const expirado = currTime > payload.exp;
+        return expirado;
+    }
+
+    public tokenSub(token: string): string {
+        const payload: { sub: string, exp: number } = JSON.parse(atob(token.split(".")[1]));
+        return payload.sub;
     }
 
     private getTokenKey(): Promise<CryptoKey> {

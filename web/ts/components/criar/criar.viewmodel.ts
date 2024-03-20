@@ -1,4 +1,5 @@
 import BaseViewModel from "../../base.viewmodel.js";
+import BlocoModel from "../../models/bloco.model.js";
 
 export default class CriarViewModel extends BaseViewModel {
 
@@ -15,7 +16,7 @@ export default class CriarViewModel extends BaseViewModel {
 
     public onConsultar = (nomeHash: string) => {};
     public onVoltar = () => {};
-    public onCriar = (nomeHash: string, senhaHash: string, nome: string) => {};
+    public onCriar = (nomeHash: string, senhaHash: string, blocoCrypt: string) => {};
 
     constructor(shadow: ShadowRoot) {
         super(shadow);
@@ -88,7 +89,13 @@ export default class CriarViewModel extends BaseViewModel {
         this.criar.addEventListener("click", async () => {
             const nomeHash = await this.crypto.obterHashNormalizado(this.nome.value);
             const senhaHash = await this.crypto.obterHash(this.senha.value);
-            this.onCriar(nomeHash, senhaHash, this.nome.value);
+            const key = await this.crypto.obterKey(senhaHash);
+            const bloco: BlocoModel = {
+                nome: this.nome.value,
+                ultimoId: 0
+            };
+            const blocoCrypt = await this.crypto.criptografar(key, JSON.stringify(bloco));
+            this.onCriar(nomeHash, senhaHash, blocoCrypt);
         });
     }
 

@@ -39,12 +39,19 @@ export default class CriarController extends BaseController {
     }
 
     async criar(context: Context): Promise<Response> {
-        const bloco: { nomeHash: string, senhaHash: string, nomeCryp: string } = await context.request.json();
-        const senhaSH = await this.crypt.criptografarSenha(bloco.senhaHash);
-        const k: Deno.KvKey = [bloco.nomeHash, 0];
-        const v = { nomeCryp: bloco.nomeCryp, senhaSH: senhaSH, ids: 0 };
+
+        interface dataType {
+            nomeHash: string;
+            senhaHash: string;
+            blocoCrypt: string;
+        };
+
+        const data: dataType = await context.request.json();
+        const senhaSH = await this.crypt.criptografarSenha(data.senhaHash);
+        const k: Deno.KvKey = [data.nomeHash, 0];
+        const v = { blocoCrypt: data.blocoCrypt, senhaSH: senhaSH };
         const kvData = await context.kv.set(k, v);
-        const token = kvData.ok ? await this.crypt.criarToken(bloco.nomeHash) : null;
+        const token = kvData.ok ? await this.crypt.criarToken(data.nomeHash) : null;
         return context.ok({ok: kvData.ok, token: token});
     }
 }

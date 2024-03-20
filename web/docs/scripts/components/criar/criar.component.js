@@ -25,9 +25,9 @@ export default class CriarComponent extends BaseComponent {
             this.viewModel.reportarErroConsultar();
         }
     }
-    async criar(nomeHash, senhaHash, nome) {
+    async criar(nomeHash, senhaHash, blocoCrypt) {
         try {
-            const response = await this.service.criar(nomeHash, senhaHash, nome);
+            const response = await this.service.criar(nomeHash, senhaHash, blocoCrypt);
             if (response.ok) {
                 this.dispatchEvent(new CustomEvent("avancar", { detail: {
                         key: response.key,

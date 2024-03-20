@@ -12,7 +12,11 @@ const handler = async (request: Request): Promise<Response> => {
     const context = new Context(request);
     if (context.isApiRequest) {
 
-        await context.openKv();
+        await Promise.all([
+            context.openKv(),
+            context.readBearer()
+        ]);
+        
         const criar = new CriarController();
         const abrir = new AbrirController();
         const controllers = BaseController.enlistHandlers(
