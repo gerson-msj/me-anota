@@ -27,23 +27,29 @@ export default class Context {
             this._kv = await Deno.openKv();
     }
 
-    public async readBearer(): Promise<void> {
+    public async auth(): Promise<boolean> {
 
         try {
             this._nomeHash = null;
 
             const auth = this.request.headers.get("authorization");
             if (auth == null)
-                return;
+                return true;
 
             const token = auth.split(" ")[1];
             if (await this.crypt.tokenValido(token) && !this.crypt.tokenExpirado(token))
                 this._nomeHash = this.crypt.tokenSub(token);
 
-        } catch (_) {
-            // Tokens inválidos ou expirados serão tratados como não autenticados nas páginas que precisam de autenticação.
+            return true;
+        } catch (error) {
+            console.error("auth", error);
+            return false;
         }
 
+    }
+
+    public unauthorized(): Response {
+        return new Response(null, { status: 401, headers: { "content-type": "application/json; charset=utf-8" } });
     }
 
     public badRequest(message: string): Response {

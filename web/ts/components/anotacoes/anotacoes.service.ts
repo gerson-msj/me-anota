@@ -1,8 +1,11 @@
 import BaseService from "../../base.service.js";
 import BlocoCrypModel from "../../models/bloco.cryp.model.js";
+import BlocoModel from "../../models/bloco.model.js";
+import NotaModel from "../../models/nota.model.js";
+import BlocoNotasModel from "../../models/bloco.notas.model.js";
 
 export default class AnotacoesService extends BaseService {
-    
+
     private _key: CryptoKey | null = null;
     private _token: string | null = null;
 
@@ -22,20 +25,23 @@ export default class AnotacoesService extends BaseService {
         this._token = token;
     }
 
-    public async obterAnotacoes(): Promise<BlocoCrypModel | null> {
-        
-        try {
-            
+    public async obterBloco(): Promise<BlocoNotasModel | null> {
 
-
-            const result = await this.handler.doGet<BlocoCrypModel>(null, this.token);
-            return result;
-        } catch (error) {
-            console.log("obterAnotacoes: ", error);
+        const result = await this.handler.doGet<BlocoCrypModel>(null, this.token);
+        if (result.blocoCrypt == null)
             return null;
+
+        const blocoJSon = await this.crypt.descriptografar(this.key, result.blocoCrypt);
+        const bloco = JSON.parse(blocoJSon) as BlocoModel;
+
+        const notas: NotaModel[] = [];
+        for (const notaCrypt of result.notasCrypt) {
+            const notaJSon = await this.crypt.descriptografar(this.key, notaCrypt);
+            const nota = JSON.parse(notaJSon) as NotaModel;
+            notas.push(nota);
         }
-        
-        
+
+        return { bloco, notas };
     }
 
 }

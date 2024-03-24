@@ -1,5 +1,5 @@
 export default interface NotaModel {
     id: number;
-    título: string;
+    titulo: string;
     conteudo: string;
 }
