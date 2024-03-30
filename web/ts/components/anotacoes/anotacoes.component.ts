@@ -42,7 +42,8 @@ export default class AnotacoesComponent extends BaseComponent<AnotacoesService, 
         try {
             await this.obterBloco();
         } catch (error) {
-            this.sair();
+            console.error(error);
+            //this.sair();
         }
     }
 
@@ -53,6 +54,7 @@ export default class AnotacoesComponent extends BaseComponent<AnotacoesService, 
             throw new Error("Bloco não encontrado.");
         
         console.log("anotacoes.obterBloco: ", blocoNotas);
+        this.viewModel.apresentar(blocoNotas);
     }
 
     private sair() {

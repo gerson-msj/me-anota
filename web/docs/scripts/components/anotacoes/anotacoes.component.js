@@ -30,7 +30,8 @@ export default class AnotacoesComponent extends BaseComponent {
             await this.obterBloco();
         }
         catch (error) {
-            this.sair();
+            console.error(error);
+            //this.sair();
         }
     }
     async obterBloco() {
@@ -38,6 +39,7 @@ export default class AnotacoesComponent extends BaseComponent {
         if (blocoNotas == null)
             throw new Error("Bloco não encontrado.");
         console.log("anotacoes.obterBloco: ", blocoNotas);
+        this.viewModel.apresentar(blocoNotas);
     }
     sair() {
         this.dispatchEvent(new Event("sair"));
